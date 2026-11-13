@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta name="title" content="Test-Time Scaling in the Wild: Why Exploitation, Not Exploration, Is the Bottleneck">
+  <meta name="description" content="The first compute-normalised comparison of five test-time scaling families on open-ended generation. The candidate pool is not the bottleneck; choosing from it is. NeurIPS 2026.">
+  <meta name="keywords" content="test-time scaling, best-of-N, reward models, open-ended generation, LLM evaluation, NeurIPS 2026">
+  <meta name="author" content="Davide Romano, Kanak Raj, Jerrod Parker, Daniele Giofrè">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="English">
+
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Test-Time Scaling in the Wild">
+  <meta property="og:title" content="Test-Time Scaling in the Wild: Why Exploitation, Not Exploration, Is the Bottleneck">
+  <meta property="og:description" content="The candidate pool is not the bottleneck; choosing from it is. Compute-normalised comparison of five test-time scaling families on open-ended generation.">
+  <meta property="og:url" content="https://kanakraj.dev/tts-in-the-wild/">
+  <meta property="og:image" content="https://kanakraj.dev/tts-in-the-wild/static/images/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Test-Time Scaling in the Wild: Why Exploitation, Not Exploration, Is the Bottleneck">
+  <meta name="twitter:description" content="The candidate pool is not the bottleneck; choosing from it is.">
+  <meta name="twitter:image" content="https://kanakraj.dev/tts-in-the-wild/static/images/og-image.png">
+
+  <meta name="citation_title" content="Test-Time Scaling in the Wild: Why Exploitation, Not Exploration, Is the Bottleneck">
+  <meta name="citation_author" content="Romano, Davide">
+  <meta name="citation_author" content="Raj, Kanak">
+  <meta name="citation_author" content="Parker, Jerrod">
+  <meta name="citation_author" content="Giofrè, Daniele">
+  <meta name="citation_publication_date" content="2026">
+  <meta name="citation_conference_title" content="Advances in Neural Information Processing Systems (NeurIPS)">
+  <meta name="citation_arxiv_id" content="2608.18931">
+
+  <meta name="theme-color" content="#2563eb">
+  <title>Test-Time Scaling in the Wild | NeurIPS 2026</title>
+
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+  <link rel="stylesheet" href="static/css/paper.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script defer src="static/js/bulma-carousel.min.js"></script>
+  <script defer src="static/js/bulma-slider.min.js"></script>
+  <script defer src="static/js/index.js"></script>
+</head>
+<body>
+
+  <button class="scroll-to-top" onclick="scrollToTop()" title="Scroll to top" aria-label="Scroll to top">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <main id="main-content">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">Test-Time Scaling in the Wild:<br>Why Exploitation, Not Exploration, Is the Bottleneck</h1>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">Davide Romano<sup>*</sup>,</span>
+              <span class="author-block"><a href="https://kanakraj.dev" target="_blank" rel="noopener">Kanak Raj</a><sup>*</sup>,</span>
+              <span class="author-block">Jerrod Parker,</span>
+              <span class="author-block">Daniele Giofr&egrave;</span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">Thomson Reuters<br><strong>NeurIPS 2026</strong></span>
+              <span class="eql-cntrb"><small><br><sup>*</sup>Equal contribution</small></span>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <span class="link-block">
+                  <a href="https://arxiv.org/pdf/2608.18931" target="_blank" rel="noopener"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="https://arxiv.org/abs/2608.18931" target="_blank" rel="noopener"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="ai ai-arxiv"></i></span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="static/pdfs/slides.pdf" target="_blank" rel="noopener"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fas fa-file-powerpoint"></i></span>
+                    <span>Slides</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="#BibTeX"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fas fa-quote-right"></i></span>
+                    <span>BibTeX</span>
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Teaser -->
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <img class="teaser-img" src="static/images/method_schema_final.png"
+             alt="Schematic of the six test-time scaling methods compared in the paper: Best-of-N, Beam Search, Particle Filtering, Budget Forcing, Fusion and Sequential Refinement.">
+        <h2 class="subtitle has-text-centered">
+          We compare five test-time scaling families, at matched compute, on five open-ended benchmarks.
+          <strong>The candidate pool is not the bottleneck; choosing from it is.</strong>
+        </h2>
+      </div>
+    </div>
+  </section>
+
+  <!-- Headline numbers -->
+  <section class="section stat-section">
+    <div class="container is-max-desktop">
+      <div class="stat-strip">
+        <div class="stat">
+          <div class="stat-value">&rho;&#770;<sub>v</sub> &asymp; 0.12</div>
+          <div class="stat-label">correlation between reward-model scores and true quality, so selection is near-random</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">~40%</div>
+          <div class="stat-label">of available headroom recovered by Fusion, the best method (Best-of-N: ~15%)</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">5 &times; 5</div>
+          <div class="stat-label">TTS families &times; open-ended benchmarks: medicine, law, finance, chat, creative writing</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Abstract -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              Test-time scaling (TTS) improves language model outputs by spending additional inference compute: generating multiple candidates, searching over partial sequences, or iteratively refining drafts. These techniques yield large gains on mathematics and code, but have been developed and stress-tested almost exclusively on tasks where verification is straightforward. We conduct the first compute-normalised comparison of five TTS families across five open-ended generation benchmarks spanning medicine, law, finance, general chat, and creative writing, grounded in a unified framework that decomposes the effectiveness of each method's token budget into exploration and exploitation. The answer depends on which side of that decomposition you examine. Scaling exploration works: the best candidate in the pool improves steadily with compute across all settings. What breaks is exploitation, the step that converts a rich candidate pool into a final output. With state-of-the-art generators, reward models correlate at only &rho;&#770;<sub>v</sub> &asymp; 0.12 with true quality, rendering selection near-random regardless of budget. Neither the generator itself nor a frontier model, used as verifier, closes the gap on medical, legal and finance benchmarks. Tree search amplifies this failure through diversity collapse. Refinement helps on one of five benchmarks; its apparent gains elsewhere are confounded. Only synthesis across candidates (Fusion) consistently improves over single-sample baselines, yet recovers only ~40% of available quality.
+              <strong>The candidate pool is not the bottleneck; choosing from it is.</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results carousel -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Key results</h2>
+      <p class="has-text-centered carousel-hint">Use the arrows to move through the five results.</p>
+    </div>
+  </section>
+  <section class="hero is-small results-section">
+    <div class="hero-body">
+      <div class="container">
+        <div id="results-carousel" class="carousel results-carousel">
+
+          <div class="item">
+            <div class="slide-figs">
+              <img src="static/images/oracle_ideal_vs_realized_per_method_per_benchmark.png"
+                   alt="Bar chart of oracle and realised quality for each TTS method on each of five benchmarks.">
+            </div>
+            <h2 class="subtitle has-text-centered">
+              <strong>1. Exploration works; exploitation does not.</strong>
+              Oracle quality (full bar) is high for every method, but realised quality (hatched) falls far short.
+              Matched compute (XHigh), Qwen3.5-35B-A3B.
+            </h2>
+          </div>
+
+          <div class="item">
+            <div class="slide-figs two">
+              <img src="static/images/headroom_capture_identity_validation.png"
+                   alt="Scatter plot of headroom capture against verifier correlation, following the identity line.">
+              <img src="static/images/exploitation_quality_per_benchmark.png"
+                   alt="Headroom capture per method at XHigh compute.">
+            </div>
+            <h2 class="subtitle has-text-centered">
+              <strong>2. The verifier explains the gap.</strong>
+              <em>Left:</em> headroom capture tracks verifier correlation along the identity line (N = 152 points, R&sup2; = 0.66).
+              <em>Right:</em> headroom capture per method at XHigh compute.
+            </h2>
+          </div>
+
+          <div class="item">
+            <div class="slide-figs two">
+              <img src="static/images/diversity_methods_Qwen35-35B.png"
+                   alt="Mean pairwise cosine distance across final outputs for each TTS method.">
+              <img src="static/images/plot5_pf_trajectory_similarity.png"
+                   alt="Particle trajectory similarity over normalised generation depth.">
+            </div>
+            <h2 class="subtitle has-text-centered">
+              <strong>3. Tree search collapses diversity.</strong>
+              <em>Left:</em> mean pairwise cosine distance across final outputs.
+              <em>Right:</em> particle trajectory similarity over generation depth.
+            </h2>
+          </div>
+
+          <div class="item">
+            <div class="slide-figs">
+              <img src="static/images/fusion_vs_bon_paired_aggregated_final.png"
+                   alt="Fusion output quality against a held-out random candidate, per benchmark.">
+            </div>
+            <h2 class="subtitle has-text-centered">
+              <strong>4. Synthesis beats selection.</strong>
+              Fusion output quality versus a random held-out candidate, per benchmark. Only Fusion improves over the single-sample baseline on every benchmark for Qwen3.5.
+            </h2>
+          </div>
+
+          <div class="item">
+            <div class="slide-figs">
+              <img src="static/images/oracle_freq_vs_mean_score_final.png"
+                   alt="Oracle-position frequency and mean score across sequential refinement iterations.">
+            </div>
+            <h2 class="subtitle has-text-centered">
+              <strong>5. Refinement helps on one benchmark of five.</strong>
+              Oracle-position frequency (bars) and mean score (line) across refinement iterations.
+            </h2>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slides -->
+  <section class="hero is-small is-light">
+    <div class="hero-body">
+      <div class="container">
+        <h2 class="title is-3 has-text-centered">Talk slides</h2>
+        <div id="slides-carousel" class="carousel results-carousel slides-carousel">
+          <div class="item">
+            <img class="slide-img" src="static/images/slides/slide-01.jpg" alt="Talk slide 1 of 11" >
+          </div>
+          <div class="item">
+            <img class="slide-img" src="static/images/slides/slide-02.jpg" alt="Talk slide 2 of 11" >
+          </div>
+          <div class="item">
+            <img class="slide-img" src="static/images/slides/slide-03.jpg" alt="Talk slide 3 of 11">
+          </div>
+          <div class="item">
+            <img class="slide-img" src="static/images/slides/slide-04.jpg" alt="Talk slide 4 of 11">
+          </div>
+          <div class="item">
+            <img class="slide-img" src="static/images/slides/slide-05.jpg" alt="Talk slide 5 of 11">
+          </div>
+          <div class="item">
+            <img class="slide-img" src="static/images/slides/slide-06.jpg" alt="Talk slide 6 of 11">
+          </div>
+          <div class="item">
+            <img class="slide-img" src="static/images/slides/slide-07.jpg" alt="Talk slide 7 of 11">
+          </div>
+          <div class="item">
+            <img class="slide-img" src="static/images/slides/slide-08.jpg" alt="Talk slide 8 of 11">
+          </div>
+          <div class="item">
+            <img class="slide-img" src="static/images/slides/slide-09.jpg" alt="Talk slide 9 of 11">
+          </div>
+          <div class="item">
+            <img class="slide-img" src="static/images/slides/slide-10.jpg" alt="Talk slide 10 of 11">
+          </div>
+          <div class="item">
+            <img class="slide-img" src="static/images/slides/slide-11.jpg" alt="Talk slide 11 of 11">
+          </div>
+        </div>
+        <p class="has-text-centered slides-link"><a href="static/pdfs/slides.pdf" target="_blank" rel="noopener"><i class="fas fa-download"></i> Open or download the slides (PDF)</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BibTeX -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <div class="bibtex-header">
+        <h2 class="title">BibTeX</h2>
+        <button class="copy-bibtex-btn" onclick="copyBibTeX()" title="Copy BibTeX to clipboard">
+          <i class="fas fa-copy"></i>
+          <span class="copy-text">Copy</span>
+        </button>
+      </div>
+      <pre id="bibtex-code"><code>@inproceedings{romano2026testtime,
+  title     = {Test-Time Scaling in the Wild: Why Exploitation, Not Exploration, Is the Bottleneck},
+  author    = {Romano, Davide and Raj, Kanak and Parker, Jerrod and Giofr{\`e}, Daniele},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2026},
+  note      = {arXiv:2608.18931},
+  url       = {https://arxiv.org/abs/2608.18931}
+}</code></pre>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank" rel="noopener">Academic Project Page Template</a>, which was adopted from the <a href="https://nerfies.github.io" target="_blank" rel="noopener">Nerfies</a> project page.
+              This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  </main>
+</body>
+</html>
