@@ -250,6 +250,75 @@
     </div>
   </section>
 
+  <!-- What we ran -->
+  <section class="section setup-section" id="setup">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">What we ran</h2>
+      <p class="has-text-centered setup-lead">
+        Six TTS methods, five open-ended benchmarks, three generator families, two reward models, one process reward model, and a unified judge.
+        About <strong>23,800 B200 GPU-hours</strong> in total.
+      </p>
+
+      <h3 class="title is-5 setup-h">Benchmarks</h3>
+      <div class="table-wrap">
+        <table class="table is-fullwidth is-striped is-hoverable setup-table">
+          <thead>
+            <tr><th>Benchmark</th><th>Domain</th><th class="num">Prompts</th><th>Evaluation</th><th>Rubric source</th><th>Scoring</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>LEXam</strong></td><td>Law</td><td class="num">516</td><td>Reference-guided</td><td>Professor solutions</td><td>Holistic, 0&ndash;1</td></tr>
+            <tr><td><strong>HealthBench</strong></td><td>Medicine</td><td class="num">5,000</td><td>Rubric-only</td><td>Physician rubrics</td><td>Binary per criterion</td></tr>
+            <tr><td><strong>PRBench</strong></td><td>Finance, law</td><td class="num">1,650</td><td>Rubric-only</td><td>Expert rubrics</td><td>Binary per criterion</td></tr>
+            <tr><td><strong>WildBench</strong></td><td>Chat, general</td><td class="num">1,024</td><td>Rubric-only</td><td>LLM-generated checklist</td><td>Holistic, 1&ndash;10</td></tr>
+            <tr><td><strong>WritingBench</strong></td><td>Creative writing</td><td class="num">555</td><td>Rubric-only</td><td>LLM-generated rubric</td><td>1&ndash;10 per criterion</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-note">None of the five admits exact-match or binary verification.</p>
+
+      <h3 class="title is-5 setup-h">Test-time scaling methods and compute budgets</h3>
+      <div class="table-wrap">
+        <table class="table is-fullwidth is-striped is-hoverable setup-table">
+          <thead>
+            <tr><th>Method</th><th>How it uses compute</th><th>Verifier</th><th class="num">Low</th><th class="num">Mid</th><th class="num">High</th><th class="num">XHigh</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Best-of-N</strong> (BoN)</td><td>Parallel sampling, select best</td><td>ORM</td><td class="num">N=2</td><td class="num">N=4</td><td class="num">N=8</td><td class="num">N=16</td></tr>
+            <tr><td><strong>Beam Search</strong> (BS)</td><td>Deterministic tree search</td><td>PRM</td><td class="num">&ndash;</td><td class="num">W=2, k=2</td><td class="num">W=2, k=4</td><td class="num">W=4, k=4</td></tr>
+            <tr><td><strong>Particle Filter</strong> (PF)</td><td>Stochastic resampling by PRM weight</td><td>PRM</td><td class="num">&ndash;</td><td class="num">N=4</td><td class="num">N=8</td><td class="num">N=16</td></tr>
+            <tr><td><strong>Sequential Refinement</strong> (SR)</td><td>Draft, critique, refine</td><td>Self (generator)</td><td class="num">1 iter</td><td class="num">2&ndash;3 iter</td><td class="num">4&ndash;6 iter</td><td class="num">7&ndash;12 iter</td></tr>
+            <tr><td><strong>Budget Forcing</strong> (BF)</td><td>Extended thinking, one trajectory</td><td>None</td><td class="num">2&times; think</td><td class="num">4&times; think</td><td class="num">8&times; think</td><td class="num">16&times; think</td></tr>
+            <tr><td><strong>Fusion</strong></td><td>Synthesise a final answer from N candidates</td><td>None (generator synthesises)</td><td class="num">&ndash;</td><td class="num">3 cand.</td><td class="num">6&ndash;7 cand.</td><td class="num">15 cand.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-note">
+        Compute is normalised by total generator output tokens, excluding the (negligible) cost of reward models.
+        Each level matches the average BoN output at N = 2, 4, 8, 16 within 25%. A dash means the method was not run at that level.
+      </p>
+
+      <h3 class="title is-5 setup-h">Models</h3>
+      <div class="table-wrap">
+        <table class="table is-fullwidth is-striped is-hoverable setup-table">
+          <thead>
+            <tr><th>Role</th><th>Model</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td rowspan="3"><strong>Generators</strong></td><td>Qwen3.5-9B, Qwen3.5-35B-A3B</td><td>Main results use Qwen3.5-35B-A3B. Thinking mode on.</td></tr>
+            <tr><td>OLMo3-7B-Think, OLMo3.1-32B-Think</td><td>Second family. Fusion results are mixed here.</td></tr>
+            <tr><td>Gemma-4-26B-A4B</td><td>Third-family check at High compute, all five benchmarks.</td></tr>
+            <tr><td rowspan="2"><strong>Outcome reward models</strong></td><td>Skywork-Reward-V2-Llama-3.1-8B</td><td>Used for Best-of-N. Chosen for RewardBench 2 performance.</td></tr>
+            <tr><td>Llama-3.1-70B-Instruct-RM-RB2</td><td>Second ORM. Near-identical realised scores to Skywork.</td></tr>
+            <tr><td><strong>Process reward model</strong></td><td>VersaPRM-8B</td><td>Guides Beam Search and Particle Filter. Chosen for multi-domain training.</td></tr>
+            <tr><td rowspan="2"><strong>Judges</strong></td><td>Qwen3.5-397B-A17B</td><td>Unified judge for all benchmarks. Checked against each native judge.</td></tr>
+            <tr><td>GLM5.2</td><td>Non-Qwen judge that re-scores Qwen3.5-35B-A3B outputs, to rule out same-family bias.</td></tr>
+            <tr><td><strong>Sanity checks</strong></td><td>MATH-500, GPQA Diamond</td><td>Same reward models add only ~2 pp here. Appendix of the paper.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
   <!-- Slides -->
   <section class="hero is-small is-light">
     <div class="hero-body">
